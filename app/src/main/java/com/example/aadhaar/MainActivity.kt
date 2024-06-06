@@ -40,9 +40,8 @@ import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.aadhaar.ui.theme.AadhaarTheme
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment 
 import androidx.compose.material3.Text as Text1
-
 
 
 class MainActivity : ComponentActivity() {
@@ -119,17 +118,7 @@ fun Mainbody(){
                 )
             }
             Spacer(modifier = Modifier.padding(20.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Button(
-                    onClick = { },
-                    colors = ButtonDefaults.buttonColors(/*backgroundColor = Color.Yellow*/)
-                ) {
-                    Text(text = "Capture Image")
-                }
-            }
+
             Spacer(modifier = Modifier.padding(20.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
