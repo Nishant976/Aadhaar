@@ -118,8 +118,6 @@ fun Mainbody(){
                 )
             }
             Spacer(modifier = Modifier.padding(20.dp))
-
-            Spacer(modifier = Modifier.padding(20.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
