@@ -104,6 +104,7 @@ fun Footer(modifier: Modifier = Modifier) {
 @Composable
 fun Mainbody(){
     var inputValue by remember { mutableStateOf("") }
+    var isError by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
     val file = context.createImageFile()
@@ -158,9 +159,22 @@ fun Mainbody(){
             ) {
                 OutlinedTextField(
                     value = inputValue,
-                    onValueChange = { inputValue = it },
-                    label = { Text(text = "Aadhaar No.") }
+                    onValueChange = { inputValue = it
+                        isError = inputValue.length != 12},
+                    label = { Text(text = "Aadhaar No.") },
+                    isError = isError
                 )
+            }
+            if (isError) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Aadhaar number must be exactly 12 digits",
+                        color = Color.Red
+                    )
+                }
             }
             Spacer(modifier = Modifier.padding(20.dp))
             Row(
