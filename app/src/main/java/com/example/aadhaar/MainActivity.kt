@@ -1,10 +1,17 @@
 package com.example.aadhaar
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.text.style.BackgroundColorSpan
+import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,12 +42,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import com.example.aadhaar.ui.theme.AadhaarTheme
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment 
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
+import java.util.Objects
 import androidx.compose.material3.Text as Text1
 
 
@@ -94,6 +105,40 @@ fun Footer(modifier: Modifier = Modifier) {
 fun Mainbody(){
     var inputValue by remember { mutableStateOf("") }
 
+    val context = LocalContext.current
+    val file = context.createImageFile()
+    val uri= FileProvider.getUriForFile(
+        Objects.requireNonNull(context),
+        context.packageName + ".provider" , file
+    )
+
+    var capturedImageUri by remember {
+        mutableStateOf<Uri>(Uri.EMPTY)
+    }
+
+    val cameraLauncher=
+        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
+            capturedImageUri=uri
+        }
+
+
+    val permissionLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+
+            if (it){
+                Toast.makeText(context,"Access Granted", Toast.LENGTH_LONG).show()
+                cameraLauncher.launch(uri)
+            }
+            else{
+                Toast.makeText(context,"Access Denied", Toast.LENGTH_LONG).show()
+            }
+        }
+
+
+
+
+
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -122,7 +167,23 @@ fun Mainbody(){
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Button(onClick = { }) {
+                Button(onClick = {
+
+                    val permissionCheckResult =
+                        ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+
+                    if(permissionCheckResult == PackageManager.PERMISSION_GRANTED)
+                    {
+                        cameraLauncher.launch(uri)
+
+                        val intent = Intent(context, MainActivity2::class.java)
+                        context.startActivity(intent)
+                    }
+                    else{
+                        permissionLauncher.launch(Manifest.permission.CAMERA)
+                    }
+
+                }) {
                     Text(text = "Submit")
                 }
             }
